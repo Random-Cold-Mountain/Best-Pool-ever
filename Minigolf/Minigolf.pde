@@ -1,12 +1,11 @@
 float x = 150;
-float y = 225;
+float y = 200;
 float deltaX;
 float deltaY;
 float arcStart = -PI/2;
 float arcEnd = PI/2;
 float ballWidth = 25;
 
-BilliardBalls[] billiards = new BilliardBalls[15];
 
 void setup()
 {
@@ -19,14 +18,13 @@ void setup()
 void draw()
 { 
  background(0);
- text("DeltaX: " + deltaX + "  Delta Y: " + deltaY, 20, 20);
  fill(#29B748);
  rect(25,25,799,399);
  clubLine(); 
  drawFigure();
  moveFigure();
  bounce();
- friction(); 
+ friction();
 }
 
 void clubLine()
@@ -40,17 +38,12 @@ void clubLine()
 
 void mouseReleased()
 {
- deltaX = (x - mouseX)/50;
- deltaY = (y - mouseY)/50;
+ deltaX = (x - mouseX)/66;
+ deltaY = (y - mouseY)/66;
 }
 
 void drawFigure()
 {
- billiards[1] = new BilliardBalls(600, 225, 0, 0);
- fill(#ff0000);
- stroke(#A6A7A6);
- ellipse(billiards[1].xpos, billiards[1].ypos, ballWidth,ballWidth);
- 
  noStroke();
  fill(0);
  fill(#FFFFFF);
@@ -58,24 +51,12 @@ void drawFigure()
  ellipse(x,y,ballWidth,ballWidth);
  noFill();
  translate(x,y);
-
 }
 
 void moveFigure()
 {
- if (deltaX < 0.05 && deltaX > -0.05){
-   deltaX = 0;
-   deltaY = 0;
- }else{
-    x += deltaX; 
- }
- 
- if (deltaY < 0.05 && deltaY > -0.05){
-   deltaX = 0;
-   deltaY = 0;
- }else{
-   y += deltaY;
- }
+ x += deltaX;
+ y += deltaY;
 }
 
 void bounce()
@@ -104,21 +85,4 @@ void bounce()
 void friction(){
   deltaX = deltaX * 0.995;
   deltaY = deltaY * 0.995;
-}
-
-class BilliardBalls{
-  
-  float xpos;
-  float ypos;
-  
-  BilliardBalls(float tempXpos, float tempYpos, float deltaXbill, float deltaYbill){
-    xpos = tempXpos;
-    ypos = tempYpos;
-  }
-  
-  void display(){
-    fill(#ff0000);
-    stroke(#A6A7A6);
-    ellipse(xpos, ypos, ballWidth,ballWidth);
-  }
 }
