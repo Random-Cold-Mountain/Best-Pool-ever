@@ -1,7 +1,7 @@
-float myX = 150;
-float myY = 225;
-float myDeltaX;
-float myDeltaY;
+float cueX = 150;
+float cueY = 225;
+float cueDeltaX;
+float cueDeltaY;
 float ballWidth = 25;
 
 Billiards[] billiards = new Billiards[1];
@@ -12,32 +12,40 @@ void setup()
   background(0);
   fill(#29B748);
   rect(0, 0, 599, 599);
+  billiards[0] = new Billiards(600, 225, 0, 0, false, "");
 }
 
 void draw()
 { 
   background(0);
-  text("DeltaX: " + myDeltaX + "  Delta Y: " + myDeltaY, 20, 20);
+  fill(#FFFFFF);
+  stroke(#A6A7A6);
+  text("DeltaX: " + cueDeltaX + "  Delta Y: " + cueDeltaY, 20, 20);
   fill(#29B748);
   rect(25, 25, 799, 399);
   poolCueLines();
   drawCue();
   moveCue();
   cueBounce();
+  cueFriction();
+  
+  drawBilliards();
+  billiards[0].collision();
+  billiards[0].moveBall();
 }
 
 void poolCueLines(){
   if (mousePressed)
   {
     stroke(#FFFFFF);
-    line(myX, myY, mouseX, mouseY);
+    line(cueX, cueY, mouseX, mouseY);
   }
 }
 
 void mouseReleased()
 {
-  myDeltaX = (myX - mouseX)/50;
-  myDeltaY = (myY - mouseY)/50;
+  cueDeltaX = (cueX - mouseX)/50;
+  cueDeltaY = (cueY - mouseY)/50;
 }
 
 void drawCue(){
@@ -45,45 +53,71 @@ void drawCue(){
   fill(0);
   fill(#FFFFFF);
   stroke(#A6A7A6);
-  ellipse(myX, myY, ballWidth, ballWidth);
-  noFill();
-  translate(myX, myY); 
+  ellipse(cueX, cueY, ballWidth, ballWidth);
+  noFill(); 
 }
 
 void moveCue(){
-   myX += myDeltaX;
-   myY += myDeltaY;
+   cueX += cueDeltaX;
+   cueY += cueDeltaY;
 }
 
 void cueBounce(){
-  if (myX > width-25-ballWidth/2 || myX < 25 + ballWidth/ 2) {
-    myDeltaX = -myDeltaX;
-    myDeltaX = myDeltaX * 0.6;
-    if (myX < 25+ ballWidth/2) {
-      myX = 26 + ballWidth/2;
+  if (cueX > width-25-ballWidth/2 || cueX < 25 + ballWidth/ 2) {
+    cueDeltaX = -cueDeltaX;
+    cueDeltaX = cueDeltaX * 0.6;
+    if (cueX < 25+ ballWidth/2) {
+      cueX = 26 + ballWidth/2;
     } else {
-      myX = width-26-ballWidth/2;
+      cueX = width-26-ballWidth/2;
     }
   }
 
-  if (myY > height-25-ballWidth/2 || myY < 25 + ballWidth/ 2) {
-    myDeltaY = -myDeltaY;
-    myDeltaY = myDeltaY * 0.6;
-    if (myY < 25+ ballWidth/2) {
-      myY = 26 + ballWidth/2;
+  if (cueY > height-25-ballWidth/2 || cueY < 25 + ballWidth/ 2) {
+    cueDeltaY = -cueDeltaY;
+    cueDeltaY = cueDeltaY * 0.6;
+    if (cueY < 25+ ballWidth/2) {
+      cueY = 26 + ballWidth/2;
     } else {
-      myY = height-26-ballWidth/2;
+      cueY = height-26-ballWidth/2;
     }
   }
+}
+
+void drawBilliards(){
+  
+  //Yellow Ball 1
+  fill(#ffff00);
+  stroke(#A6A7A6);
+  ellipse(billiards[0].ballXpos, billiards[0].ballYpos, ballWidth, ballWidth);
+}
+
+void cueFriction(){
+  cueDeltaX = cueDeltaX * 0.995;
+  cueDeltaY = cueDeltaY * 0.995;
 }
 
 class Billiards
 {
   float ballXpos;
   float ballYpos;
+  float deltaXball;
+  float deltaYball;
   
   Billiards(float tempXpos, float tempYpos, float deltaXbill, float deltaYbill, boolean stripe, String stripeColor) {
     ballXpos = tempXpos;
     ballYpos = tempYpos;
+    deltaXball = deltaXbill;
+  }
+  
+  void collision(){
+    if (cueX > ballXpos-ballWidth/2){
+      cueDeltaX = -cueDeltaX;
+      deltaXball = -cueDeltaX * 0.6;
+    }
+  }
+  
+  void moveBall(){
+     ballXpos += deltaXball;
   }
 }
